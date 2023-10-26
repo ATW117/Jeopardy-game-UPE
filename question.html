@@ -1,0 +1,117 @@
+<!doctype HTML>
+<html>
+<head>
+    <title>Jeopardy!</title>
+</head> 
+ <body style="background-color: beige">
+  <p id="questionText" style="text-align: center; font-size: 25px; position: relative; top: 130px;">The question will be displayed here.</p>
+    <select id="playerSelect" onchange="showAnswerBox()" style="position: absolute; top: 230px; left: 630px;">
+    <option value="">-- Select a Player --</option>
+    <!-- Replace with actual player names -->
+    <option value="Player 1">Player 1</option>
+    <option value="Player 2">Player 2</option>
+    <option value="Player 3">Player 3</option>
+    <option value="Player 4">Player 4</option>
+    
+  </select>
+    
+</select> 
+  <input type="text" id="answerInput" style="display: none; position: relative; left: 530px; top: 200px;">
+<button onclick="submitAnswer()" style="display: none; position: relative; left: 730px; top: 180px" id="submitButton">Submit Answer</button>
+  <button onclick="window.location.href = 'main.html';" style="display: none;" id="backButton">Back to Main Page</button>
+
+  <script>
+    const questionsData = [
+        { id: 'A1', question: "What is the law that explains for every action there is an equal and opposite reaction", answer: "Newton's third law", value: 100 },
+        { id: 'A2', question: "Who was known for his detailed observations of the moon and planets using a telescope?", answer: "Galileo Galilei", value: 100 },
+      { id: 'A3', question: "What is it called when a planet appears to move backward in its orbit from the perspective of Earth?", answer: "Retrograde motion", value: 100 },
+      { id: 'A4', question: "What are most stars made of?", answer: "Hydrogen", value: 100 },
+      { id: 'A5', question: "A light year is a measure of what?", answer: "Distance", value: 100 },
+      { id: 'B1', question: "What is the law that describes how the velocity of a galaxy relates to its distance from us?", answer: "Hubble's law", value: 200 },
+      { id: 'B2', question: "Which astronomer was responsible for the laws of planetary motion?", answer: "Kepler", value: 200 },
+      { id: 'B3', question: "The darker shadow of Earth in a lunar ecplise is called:", answer: "Umbra", value: 200 },
+      { id: 'B4', question: "What are pulsating stars that are used as standard candles for determining distances in space?", answer: "Cepheid variables", value: 200 },
+      { id: 'B5', question: "What is the unit of frequency commonly used in astronomy to describe electromagnetic radiation?", answer: "Hertz", value: 200 },
+      { id: 'C1', question: "What is the law that describes the elliptical orbits of planets?", answer: "Kepler's first law", value: 300 },
+      { id: 'C2', question: "Who was the first astronomer to suggest a heliocentric model of the solar system?", answer: "Copernicus", value: 300 },
+      { id: 'C3', question: "What phenomenon causes the apparent change in position of a star due to the Earth's orbit around the Sun?", answer: "Stellar parallax", value: 300 },
+      { id: 'C4', question: "Which type of star is our Sun classified as?", answer: "Main sequence", value: 300 },
+      { id: 'C5', question: "What unit of measurement describes the amount of matter in an object in the universe? (often used for stars)", answer: "Solar mass", value: 300 },
+      { id: 'D1', question: "What is described as the criterion of simplicity?", answer: "Occam's razor", value: 400 },
+      { id: 'D2', question: "Who first measured the size of Earth?", answer: "Eratosthenes", value: 400 },
+      { id: 'D3', question: "When light from a distant star or galaxy is stretched to longer wavelengths by the expansion of the universe, what is this phenomenon called?", answer: "Redshift", value: 400 },
+      { id: 'D4', question: "What is the stage in a star's life cycle just before it becomes a supernova?", answer: "Red supergiant", value: 400 },
+      { id: 'D5', question: "what is a unit of length used to measure the large distances to astronomical objects outside the Solar System (3.3 lightyears)", answer: "Parsec", value: 400 },
+      { id: 'E1', question: "According to which law does the energy radiated by a black body in space, per unit of surface area, increase as the fourth power of the black body's temperature?", answer: "Stefan-Boltzmann Law", value: 500 },
+      { id: 'E2', question: "Who introduced the first geocentric model?", answer: "Claudius Ptolemy", value: 500 },
+      { id: 'E3', question: "What is the uniformity of all directions of the universe called?", answer: "Isotropy", value: 500 },
+      { id: 'E4', question: "What is it called when a white dwarf star in a binary system explodes?", answer: "Type 1a supernova", value: 500 },
+      { id: 'E5', question: "what is the unit of measurement for the distance from Earth to the sun?", answer: "Astronomical unit", value: 500 }
+    ];
+function getQuestionValue(id) {
+    const lastChar = id.charAt(0);  // Assuming the format is 'A1', 'A2', etc.
+    switch(lastChar) {
+        case 'A': return 100;
+        case 'B': return 200;
+        case 'C': return 300;
+        case 'D': return 400;
+        case 'E': return 500;
+        default: return 0;
+    }
+}
+
+    const questionId = new URLSearchParams(window.location.search).get('id');
+
+
+    function getQuestionById(id) {
+        const selectedQuestion = questionsData.find(q => q.id === id);
+        return selectedQuestion ? selectedQuestion.question : 'Question not found';
+    }
+
+
+    function isCorrectAnswer(id, userAnswer) {
+        const selectedQuestion = questionsData.find(q => q.id === id);
+        return selectedQuestion && userAnswer.toLowerCase() === selectedQuestion.answer.toLowerCase();
+    }
+
+    document.getElementById('questionText').textContent = getQuestionById(questionId);
+
+ function submitAnswer() {
+    const userAnswer = document.getElementById('answerInput').value;
+    const selectedPlayer = document.getElementById("playerSelect").value;
+
+    if (isCorrectAnswer(questionId, userAnswer)) {
+        let answeredQuestions = JSON.parse(localStorage.getItem('answered') || '[]');
+        if (!answeredQuestions.includes(questionId)) { 
+            answeredQuestions.push(questionId);
+        }
+        localStorage.setItem('answered', JSON.stringify(answeredQuestions));
+        
+        
+        let scores = JSON.parse(localStorage.getItem('scores') || '{}');
+        let questionValue = getQuestionValue(questionId);
+        scores[selectedPlayer] = (parseInt(scores[selectedPlayer]) + questionValue).toString();
+        localStorage.setItem('scores', JSON.stringify(scores));
+
+        window.location.href = 'main.html'; 
+    } else {
+        alert("Incorrect! Please try again."); 
+    }
+}
+
+
+    function showAnswerBox() {
+        const playerSelected = document.getElementById("playerSelect").value;
+        if (playerSelected) {
+            document.getElementById("answerInput").style.display = "block";
+            document.getElementById("submitButton").style.display = "block";
+        } else {
+            document.getElementById("answerInput").style.display = "none";
+            document.getElementById("submitButton").style.display = "none";
+        }
+    }
+
+  </script>
+</body>
+
+

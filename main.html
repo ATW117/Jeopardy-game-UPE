@@ -1,0 +1,183 @@
+<!doctype HTML>
+<html>
+<head>
+    <title>Jeopardy!</title>
+</head>
+
+<style>
+  
+#scoresContainer {
+    width: 200px;
+    background-color: #999999;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
+}
+
+
+.playerScore {
+    font-size: 20px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        width: 1000px; 
+        margin-left: 300px;
+    }
+
+    .box {
+        width: 130px;
+        height: 65px;
+        background-color: grey;
+        border-radius: 15px;
+        padding: 20px;
+        box-sizing: border-box;
+        margin: 10px 25px;
+        font-size: 25px;
+      display: flex;
+      align-items: center;
+      display: block;
+    text-decoration: none; 
+      
+    }
+    
+    .box-text {
+        color: white;
+        position: relative;
+        left: 25px;
+    }
+  .answered {
+    background-color: #888888;  
+    text-decoration: line-through;  
+    
+}
+
+  }
+</style>
+
+<body style="background-color: beige;">
+
+<div id="scoresContainer">
+    
+</div>
+
+<div class="container">
+    
+    <div class="box" style="background-color: #660033; height: 75px; width: 150px; position: relative; right: 10px;"><span class="box-text" style="position: relative; font-size: 20px;">Laws</span></div>
+  
+    <div class="box" style="background-color: #660033; height: 75px; width: 150px; position: relative; right: 28px;" ><span class="box-text" style="position: absolute; right: 40px; font-size: 20px;">Astronomers</span></div>
+  
+    <div class="box" style="background-color: #660033; height: 75px; width: 150px;position: relative; right: 48px;"><span class="box-text" style="position: absolute; right: 40px; font-size: 20px;">Phenomena</span></div>
+  
+    <div class="box" style="background-color: #660033; height: 75px; width: 150px;position: relative; right: 68px;"><span class="box-text">Stars</span></div>
+  
+    <div class="box" style="background-color: #660033; height: 75px; width: 150px;position: relative; right: 88px;"><span class="box-text">Units</span></div>
+  
+  <a href="question.html?id=A1" class="box" id="A1"><span class="box-text">100</span></a>
+  <a href="question.html?id=A2" class="box" id="A2"><span class="box-text">100</span></a>
+    <a href="question.html?id=A3" class="box" id="A3"><span class="box-text">100</span></a>
+    <a href="question.html?id=A4" class="box" id="A4"><span class="box-text">100</span></a>
+    <a href="question.html?id=A5" class="box" id="A5"><span class="box-text">100</span></a>
+
+    
+    <a href="question.html?id=B1" class="box" id="B1"><span class="box-text">200</span></a>
+    <a href="question.html?id=B2" class="box" id="B2"><span class="box-text">200</span></a>
+    <a href="question.html?id=B3" class="box" id="B3"><span class="box-text">200</span></a>
+    <a href="question.html?id=B4" class="box" id="B4"><span class="box-text">200</span></a>
+  <a href="question.html?id=B5" class="box" id="B5"><span class="box-text">200</span></a>
+
+    
+  <a href="question.html?id=C1" class="box" id="C1"><span class="box-text">300</span></a>
+  <a href="question.html?id=C2" class="box" id="C2"><span class="box-text">300</span></a>
+  <a href="question.html?id=C3" class="box" id="C3"><span class="box-text">300</span></a>
+  <a href="question.html?id=C4" class="box" id="C4"><span class="box-text">300</span></a>
+  <a href="question.html?id=C5" class="box" id="C5"><span class="box-text">300</span></a>
+  
+  <a href="question.html?id=D1" class="box" id="D1"><span class="box-text">400</span></a>
+    <a href="question.html?id=D2" class="box" id="D2"><span class="box-text">400</span></a>
+    <a href="question.html?id=D3" class="box" id="D3"><span class="box-text">400</span></a>
+    <a href="question.html?id=D4" class="box" id="D4"><span class="box-text">400</span></a>
+    <a href="question.html?id=D5" class="box" id="D5"><span class="box-text">400</span></a>
+  
+  <a href="question.html?id=E1" class="box" id="E1"><span class="box-text">500</span></a>
+    <a href="question.html?id=E2" class="box" id="E2"><span class="box-text">500</span></a>
+    <a href="question.html?id=E3" class="box" id="E3"><span class="box-text">500</span></a>
+    <a href="question.html?id=E4" class="box" id="E4"><span class="box-text">500</span></a>
+    <a href="question.html?id=E5" class="box" id="E5"><span class="box-text">500</span></a>
+</div>
+
+<button onclick="resetGame()" style="font-size: 15px; position: absolute; left: 700px;">Reset Game</button>
+
+<script>
+
+
+
+const players = ["Player 1", "Player 2", "Player 3", "Player 4"];
+
+
+let scores = JSON.parse(localStorage.getItem('scores') || '{}');
+players.forEach(player => {
+    if (!scores[player]) {
+        scores[player] = '0';
+    }
+});
+localStorage.setItem('scores', JSON.stringify(scores));
+
+
+
+window.addEventListener('DOMContentLoaded', function() {
+    const answeredQuestions = JSON.parse(localStorage.getItem('answered') || '[]');
+    answeredQuestions.forEach(id => {
+        const answeredBox = document.getElementById(id);
+        if (answeredBox) {
+            answeredBox.classList.add('answered');
+        }
+    });
+});
+
+
+window.addEventListener('DOMContentLoaded', function() {
+    const scores = JSON.parse(localStorage.getItem('scores') || '{}');
+    const scoresContainer = document.getElementById('scoresContainer');
+
+    
+    scoresContainer.innerHTML = '';
+
+    
+    for(let player in scores) {
+        let playerScore = document.createElement('div');
+        playerScore.classList.add('playerScore');
+        playerScore.textContent = `${player}: ${scores[player]}`;
+        scoresContainer.appendChild(playerScore);
+    }
+});
+
+  window.addEventListener('DOMContentLoaded', function() {
+    const answeredQuestions = JSON.parse(localStorage.getItem('answered') || '[]');
+    answeredQuestions.forEach(id => {
+        const answeredBox = document.getElementById(id);
+        if (answeredBox) {
+            answeredBox.classList.add('answered');
+        }
+    });
+  });
+
+function resetGame() {
+    
+    localStorage.removeItem('answered');
+    localStorage.removeItem('scores');
+    
+    location.reload();
+}
+
+</script>
+
+</body>
+
+
+</html>
